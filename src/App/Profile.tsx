@@ -1,13 +1,17 @@
+import { Image, Text, View } from "react-native";
 import { Avatar } from "~/components/Avatar";
 
 export function Profile() { 
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-red-400">
-        <Avatar>
-            <img src="https://example.com/avatar.jpg" alt="Avatar" />
-        </Avatar>
-        <h1 className="text-2xl font-bold">Profile</h1>
-        <p className="mt-4">This is the profile page.</p>
-        </div>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' , height: 100, padding: 20 }}>  
+            <Text className="mb-4">Witallo rei delas</Text>
+            <Avatar>
+                <Image
+                    source={{ uri: 'https://avatars.githubusercontent.com/u/46324934?s=400&u=58a1cf63485cc54491a2e780dbc26b25f8c41859&v=4' }}
+                    alt="Avatar"
+                    className="w-full h-full rounded-full"
+                />    
+            </Avatar>
+        </View>
     );
 }
