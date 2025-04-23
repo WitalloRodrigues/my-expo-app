@@ -15,7 +15,7 @@ const mockData = {
         id: 1,
         date: new Date(2025, 3, 21),
         startTime: '09:00',
-        endTime: '09:30',
+        endTime: '09:15',
         clientName: 'Nome',
         service: 'CORTE',
         price: 30.0,
@@ -42,7 +42,7 @@ const mockData = {
             id: 4,
             date: new Date(2025, 3, 26),
             startTime: '15:00',
-            endTime: '16:00',
+            endTime: '15:30',
             clientName: 'Ana',
             service: 'CORTE',
             price: 30.0,
@@ -59,7 +59,7 @@ const mockData = {
         {
             id: 6,
             date: new Date(2025, 3, 21),
-            startTime: '15:00',
+            startTime: '15:30',
             endTime: '16:00',
             clientName: 'Ana',
             service: 'CORTE',
@@ -69,7 +69,7 @@ const mockData = {
             id: 7,
             date: new Date(2025, 3, 21),
             startTime: '15:00',
-            endTime: '16:00',
+            endTime: '15:30',
             clientName: 'Ana',
             service: 'CORTE',
             price: 30.0,
@@ -77,8 +77,8 @@ const mockData = {
         {
             id: 8,
             date: new Date(2025, 3, 21),
-            startTime: '09:30',
-            endTime: '10:00',
+            startTime: '09:18',
+            endTime: '09:48',
             clientName: 'Nome',
             service: 'CORTE Zero',
             price: 40.0,
@@ -244,92 +244,75 @@ export function Main(){
 
 
 <View className='p-6 mt-16 bg-gray-100'>
-  {(() => {
-    const intervalDuration = 30; // em minutos
-    const startTimeStr = '08:00';
-    const endTimeStr   = '19:30';
+          {(() => {
+            const intervalDuration = 30;
+            const startTimeStr = '08:00';
+            const endTimeStr = '19:30';
+            const startTime = parseTime(startTimeStr);
+            const endTime = parseTime(endTimeStr);
 
-    const startTime = parseTime(startTimeStr);
-    const endTime   = parseTime(endTimeStr);
+            // gerar slots de 30min
+            const intervals: Date[] = [];
+            const cur = new Date(startTime);
+            while (cur <= endTime) {
+              intervals.push(new Date(cur));
+              cur.setMinutes(cur.getMinutes() + intervalDuration);
+            }
 
-    // Gera os intervalos de 30 em 30 minutos
-    const intervals: Date[] = [];
-    const cur = new Date(startTime);
-    while (cur <= endTime) {
-      intervals.push(new Date(cur));
-      cur.setMinutes(cur.getMinutes() + intervalDuration);
-    }
+            const todayAppointments = mockData.appointments.filter(
+              app => app.date.toDateString() === selectedDate.toDateString()
+            );
 
-    // Só os agendamentos do dia
-    const todayAppointments = mockData.appointments.filter(
-      app => app.date.toDateString() === selectedDate.toDateString()
-    );
+            // incluir horários de início de agendamentos não alinhados aos intervals
+            const extraTimes = todayAppointments.map(app => parseTime(app.startTime));
+            const allTimes = [...intervals, ...extraTimes]
+              .map(d => d.getTime())
+              .filter((v, i, a) => a.indexOf(v) === i)
+              .sort((a, b) => a - b)
+              .map(t => new Date(t));
 
-    return intervals.map((time, index) => {
-      const hourStr = time.toTimeString().slice(0,5);
-
-      // linha acima de `time`: ocultar se estiver dentro de qualquer agendamento
-      const suppressLine = todayAppointments.some(app => {
-        const start = parseTime(app.startTime);
-        const end   = parseTime(app.endTime);
-        return (time > start && time < end);
-      });
-
-      // agendamentos que começam exatamente em `hourStr`
-      const appsHere = todayAppointments.filter(a => a.startTime === hourStr);
-
-      if(suppressLine){
-        return null;
-      }
-      return (
-        <View key={hourStr}>
-          <View
-            className={`h-[1px] ${suppressLine ? 'bg-transparent' : 'bg-slate-300'}`}
-          />
-
-          <View className='flex flex-row items-start justify-between mb-4 mt-4'>
-            <Text className='text-gray-400 font-bold'>{hourStr}</Text>
-
-            <View className='w-[80%]'>
-              {appsHere.map(app => {
-                const start = parseTime(app.startTime);
-                const end   = parseTime(app.endTime);
-                const durationH = (end.getTime() - start.getTime()) / 1000 / 60 / 60;
-
-                return (
-                  <View
-                    key={app.id}
-                    className='mb-4 p-4 rounded-2xl bg-white shadow-sm'
-                    
-                  >
-                    <View className='flex flex-row justify-between items-center'>
-                      <Text className='text-gray-500'>
-                        {app.startTime} - {app.endTime}
-                      </Text>
-                      <TouchableOpacity className='flex flex-row gap-4'>
-                        <Fontisto name="bell-alt" size={16} color="gray" />
-                        <FontAwesome5 name="ellipsis-h" size={16} color="gray" />
-                      </TouchableOpacity>
-                    </View>
-                    <View className='mt-3 flex flex-row justify-between items-end'>
-                      <View>
-                        <Text className='text-xl font-bold text-slate-900'>{app.clientName}</Text>
-                        <Text className='text-gray-500'>{app.service}</Text>
-                      </View>
-                      <Text className='font-bold text-orange-700'>
-                        R$ {app.price.toFixed(2)}
-                      </Text>
+            return allTimes.map(time => {
+              const hourStr = time.toTimeString().slice(0,5);
+              const suppressLine = todayAppointments.some(app => {
+                const s = parseTime(app.startTime);
+                const e = parseTime(app.endTime);
+                return time > s && time < e;
+              });
+              const appsHere = todayAppointments.filter(app => parseTime(app.startTime).getTime() === time.getTime());
+              if(suppressLine){
+                return null;
+              }
+              return (
+                <View key={hourStr}>
+                  <View className={`h-[1px] ${suppressLine ? 'bg-transparent' : 'bg-slate-300'}`} />
+                  <View className='flex flex-row items-start justify-between mb-4 mt-4'>
+                    <Text className='text-gray-400 font-bold'>{hourStr}</Text>
+                    <View className='w-[80%]'>
+                      {appsHere.map(app => (
+                        <View key={app.id} className='mb-4 p-4 rounded-2xl bg-white shadow-sm'>
+                          <View className='flex flex-row justify-between items-center'>
+                            <Text className='text-gray-500'>{app.startTime} - {app.endTime}</Text>
+                            <TouchableOpacity className='flex flex-row gap-4'>
+                              <Fontisto name="bell-alt" size={16} color="gray" />
+                              <FontAwesome5 name="ellipsis-h" size={16} color="gray" />
+                            </TouchableOpacity>
+                          </View>
+                          <View className='mt-3 flex flex-row justify-between items-end'>
+                            <View>
+                              <Text className='text-xl font-bold text-slate-900'>{app.clientName}</Text>
+                              <Text className='text-gray-500'>{app.service}</Text>
+                            </View>
+                            <Text className='font-bold text-orange-700'>R$ {app.price.toFixed(2)}</Text>
+                          </View>
+                        </View>
+                      ))}
                     </View>
                   </View>
-                );
-              })}
-            </View>
-          </View>
+                </View>
+              );
+            });
+          })()}
         </View>
-      );
-    });
-  })()}
-</View>
 
 
 
