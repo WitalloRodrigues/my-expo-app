@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { StatusBar, SafeAreaView, View, Text, TouchableOpacity, ScrollView, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import {MaterialCommunityIcons,Entypo,FontAwesome5,Fontisto,MaterialIcons} from '@expo/vector-icons';
+import {MaterialCommunityIcons,Entypo,FontAwesome5,Fontisto,MaterialIcons,AntDesign} from '@expo/vector-icons';
 
 const mockData = {
     user: {
@@ -160,14 +160,19 @@ export function Main(){
         className="mt-[26px] bg-slate-100"
       >
         
-            <View className='bg-slate-900 h-[21em] rounded-e-2xl w-full relative'>
+            <View className='bg-slate-900 min-h-[21em] rounded-e-2xl w-full relative'>
+
+
                 <View className='flex flex-row justify-between items-start px-4 py-4'>
                     <View className='flex items-start'>
                         <View className='flex flex-row'>
                         <Text className='text-3xl text-orange-700'>Olá, </Text>
                         <Text className='text-2xl text-white'>{mockData.user.name}</Text>
                         </View>
-                        <TouchableOpacity><Text className='text-white'>Você está em sua agenda.</Text></TouchableOpacity>
+                        <TouchableOpacity className='flex flex-row items-center'>
+                            <Text className='text-white'>Você está em sua agenda.</Text>
+                            <AntDesign name="caretdown" size={10} color="white" />
+                            </TouchableOpacity>
                     </View>
                     <View className='flex items-center flex-row gap-2'>
                         <TouchableOpacity className='bg-orange-700 p-2 rounded-lg'>
@@ -178,6 +183,7 @@ export function Main(){
                         </TouchableOpacity>
                     </View>
                 </View>
+                
 
                 <View className='flex flex-row justify-between items-center'>
                     <TouchableOpacity className=' p-4 rounded-lg flex-row  items-center gap-2'>
@@ -186,13 +192,13 @@ export function Main(){
                                 {formatDate(mockData.currentWeek.startDate)} a {formatDate(mockData.currentWeek.endDate)}
                             </Text>
                         </TouchableOpacity>
-                    <View className='flex flex-row items-center'>
+                    <View className='flex flex-row items-center mr-6'>
                         <Entypo name="chevron-left" size={34} color="white" />
                         <Entypo name="chevron-right" size={34} color="white" />
                     </View>
                 </View>
 
-                <View className='flex flex-row justify-between items-center px-4'>
+                <View className='flex flex-row justify-between items-center px-4 mb-[6em]'>
                     {weekDates.map((date, index) => (
                         <TouchableOpacity
                             key={index}
@@ -240,6 +246,7 @@ export function Main(){
                     </View>
                 </View>
 </View>
+
 
 
 
@@ -292,7 +299,7 @@ export function Main(){
                         <View key={app.id} className='mb-4 p-4 rounded-2xl bg-white shadow-sm'>
                           <View className='flex flex-row justify-between items-center'>
                             <Text className='text-gray-500'>{app.startTime} - {app.endTime}</Text>
-                            <TouchableOpacity className='flex flex-row gap-4'>
+                            <TouchableOpacity className='flex flex-row gap-9'>
                               <Fontisto name="bell-alt" size={16} color="gray" />
                               <FontAwesome5 name="ellipsis-h" size={16} color="gray" />
                             </TouchableOpacity>
@@ -338,7 +345,7 @@ export function Main(){
                 </TouchableOpacity>
                 <TouchableOpacity className='p-4 rounded-lg items-center w-[81%] mr-2 bg-orange-700 flex flex-row justify-between'>
                     <Text className='text-white'>Adicionar Agendamento</Text>
-                    <FontAwesome5 name="long-arrow-alt-right" size={24} color="black" />
+                    <FontAwesome5 name="long-arrow-alt-up" size={24} color="white" />
                 </TouchableOpacity>
 
             </View>
