@@ -3,6 +3,8 @@ import { View, Text } from 'react-native';
 import { AppointmentCard } from './AppointmentCard';
 import { Appointment, ScheduleConfig } from '../../../types';
 import { parseTime } from '~/utils/data';
+import {AntDesign} from '@expo/vector-icons';
+
 
 interface ScheduleLinesProps {
   appointments: Appointment[];
@@ -73,8 +75,8 @@ export function ScheduleLines({ appointments, selectedDate, scheduleConfig }: Sc
             {/* linha atual */}
             {isToday && index === currentLineIndex && (
               <View className="absolute top-0 left-[15%] flex-row items-center w-[85%]">
-                <Text>➤</Text>
-                <View className="flex-1 h-[3px] bg-red-400 -ml-1" />
+                <AntDesign name="caretright" size={14} color="black" />
+                <View className="flex-1 h-[3px] bg-red-400 -ml-1 " />
               </View>
             )}
 
