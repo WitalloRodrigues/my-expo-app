@@ -350,7 +350,7 @@ const cardData = useMemo(() => {
 
                 const extraTimes = todayAppointments.map(app => parseTime(app.startTime));
                 const allTimes = [...intervals, ...extraTimes]
-                  .map(d => d.getTime())
+                  .map(d => d.getTime()) 
                   .filter((v, i, a) => a.indexOf(v) === i)
                   .sort((a, b) => a - b)
                   .map(t => new Date(t));

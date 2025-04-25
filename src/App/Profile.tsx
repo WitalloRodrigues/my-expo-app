@@ -1,5 +1,5 @@
 import { Image, Text, View } from "react-native";
-import { Avatar } from "~/components/Avatar";
+import { Avatar } from "~/components/ui/Avatar";
 
 export function Profile() { 
     return (
