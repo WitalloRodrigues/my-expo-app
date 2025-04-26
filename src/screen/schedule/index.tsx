@@ -1,4 +1,4 @@
-import {  ScrollView, View } from 'react-native';
+import {  ScrollView, Text, View } from 'react-native';
 import { useAgenda } from './hooks/useAgenda';
 import { Header } from './components/Header';
 import { WeekSelector } from './components/WeekSelector';
@@ -9,6 +9,10 @@ import { mockData } from '../../mockData';
 import { ConfigScheduleDay } from './components/ConfigScheduleDay';
 import {MaterialIcons} from '@expo/vector-icons';
 import { ScrollToTop } from './components/ScrollToTop';
+import { RightSheet } from '~/components/custom/RightSheet';
+import { BottomSheet } from '~/components/custom/BottomSheet';
+import { useState } from 'react';
+
 
 export default function AgendaScreen() {
   const {
@@ -25,6 +29,8 @@ export default function AgendaScreen() {
     handleScroll,
     showScrollTop
   } = useAgenda(mockData.appointments);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -64,8 +70,16 @@ export default function AgendaScreen() {
         />
         <ConfigScheduleDay/>
       </ScrollView>
-      <BottomBar onAddPress={() => {}} />
+      <BottomBar onAddPress={() => setIsOpen(true)} />
       <ScrollToTop showScrollTop={showScrollTop} scrollToTop={scrollToTop}/>
+
+      <BottomSheet isOpen={isOpen} setIsOpen={setIsOpen}>
+        <Text className="text-x">Conteúdo aqui</Text>
+      </BottomSheet>
+
+      <RightSheet>
+        <Text className='text-xl text-white'>Conteúdo do Menu Lateral</Text>
+      </RightSheet>
     </>
   );
 }

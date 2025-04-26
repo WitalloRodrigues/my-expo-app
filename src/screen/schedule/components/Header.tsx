@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons, Entypo, AntDesign } from '@expo/vector-icons';
 import { User } from '../../../types';
+import { RightSheet } from '~/components/custom/RightSheet';
 
 interface HeaderProps {
   user: User;
@@ -26,9 +27,10 @@ export function Header({ user, onToggleVisibility, onToggleList }: HeaderProps) 
         <TouchableOpacity className="bg-orange-700 p-3 rounded-lg" onPress={onToggleVisibility}>
           <MaterialCommunityIcons name="eye-off" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity className="bg-orange-700 p-3 rounded-lg" onPress={onToggleList}>
+        <TouchableOpacity className="opacity-0 p-3 rounded-lg" onPress={onToggleList}>
           <Entypo name="list" size={24} color="white" />
         </TouchableOpacity>
+        
       </View>
     </View>
   );
