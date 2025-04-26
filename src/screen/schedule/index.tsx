@@ -1,4 +1,4 @@
-import {  ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useAgenda } from './hooks/useAgenda';
 import { Header } from './components/Header';
 import { WeekSelector } from './components/WeekSelector';
@@ -7,18 +7,18 @@ import { ScheduleLines } from './components/ScheduleLines';
 import { BottomBar } from './components/BottomBar';
 import { mockData } from '../../mockData';
 import { ConfigScheduleDay } from './components/ConfigScheduleDay';
-import {MaterialIcons} from '@expo/vector-icons';
 import { ScrollToTop } from './components/ScrollToTop';
 import { RightSheet } from '~/components/custom/RightSheet';
 import { BottomSheet } from '~/components/custom/BottomSheet';
 import { useEffect, useState } from 'react';
-
 import { BackHandler } from "react-native";
-
-
-
+import AppMenu from '../menu';
+import { useNavigation, ParamListBase, NavigationProp } from '@react-navigation/native';
 
 export default function AgendaScreen() {
+  // Especificando o tipo genérico para o hook useNavigation
+  const Navigation = useNavigation<NavigationProp<ParamListBase>>();
+  
   const {
     selectedDate,
     setSelectedDate,
@@ -33,6 +33,9 @@ export default function AgendaScreen() {
     handleScroll,
     showScrollTop
   } = useAgenda(mockData.appointments);
+
+  const navigation = useNavigation();
+  const isNavigationReady = !!navigation;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -99,7 +102,13 @@ export default function AgendaScreen() {
       </BottomSheet>
 
       <RightSheet>
-        <Text className='text-xl text-white'>Conteúdo do Menu Lateral</Text>
+        {isNavigationReady ? (
+          <AppMenu navigation={navigation} />
+        ) : (
+          <View className="flex-1 items-center justify-center">
+            <Text className="text-gray-500">Carregando menu...</Text>
+          </View>
+        )}
       </RightSheet>
     </>
   );

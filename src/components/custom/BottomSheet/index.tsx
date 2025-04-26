@@ -49,7 +49,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
 
       {/* Sheet */}
       <Animated.View
-        className="absolute left-0 right-0 bg-white z-50 rounded-t-3xl overflow-hidden"
+        className="absolute left-0 right-0 bg-white z-[999] rounded-t-3xl overflow-hidden"
         style={{
           height: SCREEN_HEIGHT,
           bottom: 0,

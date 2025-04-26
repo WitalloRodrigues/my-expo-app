@@ -65,14 +65,14 @@ export const RightSheet: React.FC<RightSheetProps> = ({ children }) => {
     <>
       {/* Botão flutuante */}
       <Animated.View
-        className="absolute top-[2.9rem] right-[0.9rem] z-40"
+        className="absolute top-[2.9rem] right-[0.9rem] z-50"
         style={{
           transform: [{ translateX: buttonTranslateX }],
         }}
       >
         <Pressable
           onPress={toggleSheet}
-          className={`w-[3.4rem] h-[3.4rem] bg-orange-${isOpen?"600":"700"} rounded-xl items-center justify-center shadow-lg`}
+          className={`w-[3.4rem] h-[3.4rem] bg-orange-700 rounded-xl items-center justify-center shadow-lg`}
         >
           
           {isOpen ? (
@@ -86,7 +86,7 @@ export const RightSheet: React.FC<RightSheetProps> = ({ children }) => {
       {/* Backdrop */}
       {isOpen && (
         <Pressable
-          className="absolute inset-0  z-40"
+          className="absolute inset-0 bg-black/40 z-40"
           onPress={toggleSheet}
         />
       )}
@@ -100,7 +100,7 @@ export const RightSheet: React.FC<RightSheetProps> = ({ children }) => {
         }}
       >
         {/* Conteúdo isolado */}
-        <View className="flex-1 p-6 mt-8 flex items-center">{children}</View>
+        <View className="flex-1 p-6 mt-8">{children}</View>
       </Animated.View>
     </>
   );
