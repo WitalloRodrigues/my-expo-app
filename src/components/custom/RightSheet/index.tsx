@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Text,
   Pressable,
   Animated,
   Easing,
   Dimensions,
+  BackHandler,
 } from "react-native";
 import { View } from "react-native";
 
@@ -20,6 +21,25 @@ interface RightSheetProps {
 
 export const RightSheet: React.FC<RightSheetProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+      const backAction = () => {
+        if (isOpen) {
+          toggleSheet();
+          return true; 
+        }
+        return true;
+      };
+    
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+    
+      return () => backHandler.remove();
+    }, [isOpen]);
+
+
   const animation = useRef(new Animated.Value(0)).current;
 
   const toggleSheet = () => {

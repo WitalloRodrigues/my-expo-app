@@ -11,7 +11,11 @@ import {MaterialIcons} from '@expo/vector-icons';
 import { ScrollToTop } from './components/ScrollToTop';
 import { RightSheet } from '~/components/custom/RightSheet';
 import { BottomSheet } from '~/components/custom/BottomSheet';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { BackHandler } from "react-native";
+
+
 
 
 export default function AgendaScreen() {
@@ -31,6 +35,23 @@ export default function AgendaScreen() {
   } = useAgenda(mockData.appointments);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (isOpen) {
+        setIsOpen(false);
+        return true; // impede que o app feche
+      }
+      return true;
+    };
+  
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+  
+    return () => backHandler.remove();
+  }, [isOpen]);
 
   return (
     <>
