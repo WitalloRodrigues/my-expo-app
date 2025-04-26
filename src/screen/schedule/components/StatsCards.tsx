@@ -42,7 +42,7 @@ const weekLabel = isCurrentWeek
         <Text className="text-white">{dayLabel}</Text>
         <View className="flex-row items-center mt-2">
           <FontAwesome5 name="coins" size={12} color="white" />
-          <Text className="text-white ml-1">R$ {totalMoneyToday.toFixed(2)}</Text>
+            <Text className="text-white ml-1">R$ {totalMoneyToday.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
         </View>
         <Text className="text-white text-3xl font-bold mt-2">{totalToday}</Text>
       </TouchableOpacity>
@@ -50,7 +50,7 @@ const weekLabel = isCurrentWeek
         <Text>{weekLabel}</Text>
         <View className="flex-row items-center mt-2">
           <FontAwesome5 name="coins" size={12} color="gray" />
-          <Text className="ml-1">R$ {totalMoneyWeek.toFixed(2)}</Text>
+          <Text className="ml-1">R$ {totalMoneyWeek.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
         </View>
         <Text className="text-3xl font-bold mt-2">{totalWeek}</Text>
       </TouchableOpacity>
