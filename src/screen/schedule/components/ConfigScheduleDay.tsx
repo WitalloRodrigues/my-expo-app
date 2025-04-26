@@ -27,12 +27,13 @@ export function ConfigScheduleDay(){
                 </Text>
                 </TouchableOpacity>
                 <View>
-                <Text className='text-xs mt-10'>
-                    Versão {' '}
-                    <Text className='font-bold text-slate-800'>
-                        BarbelNow 1.0.0
-                    </Text>
-                </Text>
+                <View className="mt-4 pt-4  flex items-center">
+                  <Text className="text-xs text-gray-600 flex flex-row items-center">
+                    <Text className="font-semibold ">AgendaAE</Text>{' '}
+                    <Text className="mx-1 text-gray-400">•</Text>{' '}
+                    <Text className="font-medium">Versão 1.0.0</Text>
+                  </Text>
+                </View>
                 </View>   
             </View>
         </>

@@ -463,9 +463,9 @@ const cardData = useMemo(() => {
               </TouchableOpacity>
               <View>
                 <Text className='text-xs mt-10'>
-                    Versão {' '}
+                AgendaAE {' '}
                     <Text className='font-bold text-slate-800'>
-                      BarbelNow 1.0.0
+                    Versão 1.0.0 
                     </Text>
                 </Text>
               </View>   

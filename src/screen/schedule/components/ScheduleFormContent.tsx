@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Switch, Pressable, Keyboard, Button } from "react-native";
+import { View, Text, TextInput, Switch, Pressable, Keyboard } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { MaskedTextInput } from "react-native-mask-text"; // <<--- aqui
 import dayjs from "dayjs";
+import { DatePickerInput } from "~/components/custom/DatePickerInput";
+import { TimePickerInput } from "~/components/custom/TimePickerInput";
+import { PhoneInputField } from "~/components/custom/PhoneInput";
 
 type FormData = {
   clientName: string;
   phone: string;
   service: string;
-  date: string; 
-  time: string;
+  date: string; // formato 'YYYY-MM-DD'
+  time: string; // formato 'HH:mm'
   repeat: boolean;
 };
 
@@ -24,9 +28,11 @@ export function ScheduleFormContent({ onClose }: Props) {
   });
 
   const [dateModalOpen, setDateModalOpen] = useState(false);
+  const [timeModalOpen, setTimeModalOpen] = useState(false); // <<--- NOVO
   const [kbHeight, setKbHeight] = useState(0);
 
   const selectedDate = watch('date');
+  const selectedTime = watch('time');
 
   useEffect(() => {
     const show = Keyboard.addListener("keyboardDidShow", e => setKbHeight(e.endCoordinates.height));
@@ -69,16 +75,14 @@ export function ScheduleFormContent({ onClose }: Props) {
             />
           )} />
 
-          {/* Telefone */}
+          {/* Telefone com máscara */}
           <Controller control={control} name="phone" render={({ field }) => (
-            <TextInput
-              className="bg-gray-100 rounded-2xl p-4 text-base"
-              placeholder="Telefone"
-              keyboardType="phone-pad"
-              onChangeText={field.onChange}
-              value={field.value}
+            <PhoneInputField
+                value={field.value}
+                onChange={field.onChange}
             />
-          )} />
+            )} />
+
 
           {/* Serviço */}
           <Controller control={control} name="service" render={({ field }) => (
@@ -91,41 +95,23 @@ export function ScheduleFormContent({ onClose }: Props) {
           )} />
 
           {/* Data */}
-          <View>
-            <Pressable
-              onPress={() => setDateModalOpen(true)}
-              className="bg-gray-100 rounded-2xl p-4"
-            >
-              <Text className="text-base text-gray-700">
-                {selectedDate ? dayjs(selectedDate).format('DD/MM/YYYY') : 'Selecionar data'}
-              </Text>
-            </Pressable>
-
-            {dateModalOpen && (
-              <DateTimePicker
-                value={selectedDate ? dayjs(selectedDate).toDate() : new Date()}
-                mode="date"
-                display="default"
-                minimumDate={new Date()} // This sets the minimum date to today
-                onChange={(event, date) => {
-                  setDateModalOpen(false);
-                  if (event.type === "set" && date) {
-                    setValue('date', dayjs(date).format('YYYY-MM-DD'));
-                  }
-                }}
-              />
-            )}
-          </View>
-
-          {/* Horário */}
-          <Controller control={control} name="time" render={({ field }) => (
-            <TextInput
-              className="bg-gray-100 rounded-2xl p-4 text-base"
-              placeholder="Horário (ex: 14:30)"
-              onChangeText={field.onChange}
-              value={field.value}
+          <Controller control={control} name="date" render={({ field }) => (
+            <DatePickerInput
+                value={field.value}
+                onChange={field.onChange}
+                minimumDate={new Date()}
             />
-          )} />
+           )} />
+
+
+          {/* Horário com picker */}
+          <Controller control={control} name="time" render={({ field }) => (
+            <TimePickerInput
+                value={field.value}
+                onChange={field.onChange}
+            />
+            )} />
+
 
           {/* Repetir */}
           <View className="flex-row items-center justify-between bg-gray-100 rounded-2xl py-2 px-4">
