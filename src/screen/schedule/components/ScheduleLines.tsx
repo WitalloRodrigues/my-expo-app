@@ -5,14 +5,18 @@ import { Appointment, ScheduleConfig } from '../../../types';
 import { parseTime } from '~/utils/data';
 import {AntDesign} from '@expo/vector-icons';
 
+import * as Progress from 'react-native-progress';
 
 interface ScheduleLinesProps {
   appointments: Appointment[];
   selectedDate: Date;
   scheduleConfig: ScheduleConfig;
+  refreshing: boolean;
 }
 
-export function ScheduleLines({ appointments, selectedDate, scheduleConfig }: ScheduleLinesProps) {
+export function ScheduleLines({ appointments, selectedDate, scheduleConfig ,refreshing}: ScheduleLinesProps) {
+
+  console.log(refreshing)
   const { intervalDuration, startTimeStr, endTimeStr } = scheduleConfig;
   const now = new Date();
   const isToday = selectedDate.toDateString() === now.toDateString();
@@ -53,7 +57,20 @@ export function ScheduleLines({ appointments, selectedDate, scheduleConfig }: Sc
   }
 
   return (
-    <View className="p-6 mt-14 bg-gray-100 relative">
+    <View className="p-6 mt-12 bg-gray-100 relative">
+      {refreshing && (
+          <View className="mb-4 items-center -mt-4">
+            <Progress.Bar
+              indeterminate
+              width={200}
+              color="#EF4444"
+              borderColor="#ddd"
+              unfilledColor="#f3f3f3"
+              animationType="spring"
+              borderRadius={10}
+            />
+          </View>
+        )}
       {allTimes.map((time, index) => {
         const hourStr = time.toTimeString().slice(0, 5);
 

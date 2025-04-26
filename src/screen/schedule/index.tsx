@@ -1,4 +1,5 @@
-import { ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Text, View, RefreshControl } from 'react-native';
 import { useAgenda } from './hooks/useAgenda';
 import { Header } from './components/Header';
 import { WeekSelector } from './components/WeekSelector';
@@ -10,16 +11,14 @@ import { ConfigScheduleDay } from './components/ConfigScheduleDay';
 import { ScrollToTop } from './components/ScrollToTop';
 import { RightSheet } from '~/components/custom/RightSheet';
 import { BottomSheet } from '~/components/custom/BottomSheet';
-import { useEffect, useState } from 'react';
-import { BackHandler } from "react-native";
+import { BackHandler } from 'react-native';
 import AppMenu from '../menu';
 import { useNavigation, ParamListBase, NavigationProp } from '@react-navigation/native';
 import { ScheduleFormContent } from './components/ScheduleFormContent';
 
 export default function AgendaScreen() {
-  // Especificando o tipo genérico para o hook useNavigation
   const Navigation = useNavigation<NavigationProp<ParamListBase>>();
-  
+
   const {
     selectedDate,
     setSelectedDate,
@@ -32,38 +31,60 @@ export default function AgendaScreen() {
     scrollToTop,
     scrollViewRef,
     handleScroll,
-    showScrollTop
+    showScrollTop,
   } = useAgenda(mockData.appointments);
 
   const navigation = useNavigation();
   const isNavigationReady = !!navigation;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false); // Estado para controlar o refresh
+
+  // Função para lidar com o pull-to-refresh
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      // Simule ou implemente a lógica de recarga de dados aqui
+      console.log('Refreshing data...');
+      // Add a delay to simulate network request
+      await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
+      // Exemplo: await fetchData();
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     const backAction = () => {
       if (isOpen) {
         setIsOpen(false);
-        return true; // impede que o app feche
+        return true; // Impede que o app feche
       }
-      return true;
+      return false;
     };
-  
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-  
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
     return () => backHandler.remove();
   }, [isOpen]);
 
   return (
     <>
-      <ScrollView 
+      <ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
-        scrollEventThrottle={16} 
-        className="bg-gray-100" 
+        scrollEventThrottle={16}
+        className="bg-gray-100"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#EF4444']} // Cor do indicador Android
+            tintColor="#EF4444" // Cor do indicador iOS
+          />
+        }
       >
         <View className="bg-slate-900 rounded-b-3xl">
           <Header user={mockData.user} onToggleVisibility={() => {}} onToggleList={() => {}} />
@@ -92,11 +113,13 @@ export default function AgendaScreen() {
           appointments={mockData.appointments}
           selectedDate={selectedDate}
           scheduleConfig={mockData.scheduleConfig}
+          refreshing={refreshing}
         />
-        <ConfigScheduleDay/>
+        <ConfigScheduleDay />
       </ScrollView>
-      <BottomBar onAddPress={() => setIsOpen(true)} />
-      <ScrollToTop showScrollTop={showScrollTop} scrollToTop={scrollToTop}/>
+
+      <BottomBar onAddPress={() => setIsOpen(true)} /> 
+      <ScrollToTop showScrollTop={showScrollTop} scrollToTop={scrollToTop} />
 
       <BottomSheet isOpen={isOpen} setIsOpen={setIsOpen}>
         <ScheduleFormContent onClose={() => setIsOpen(false)} />

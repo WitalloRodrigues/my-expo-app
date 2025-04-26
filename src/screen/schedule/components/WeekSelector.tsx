@@ -30,7 +30,7 @@ export function WeekSelector({
             {format(weekStart, "dd MMM yyyy", { locale: ptBR })} à {format(weekEnd, "dd MMM yyyy", { locale: ptBR })}
           </Text>
         </TouchableOpacity>
-        <View className="flex-row">
+        <View className="flex-row ml-10">
           <TouchableOpacity onPress={onPrevWeek}><MaterialCommunityIcons name="chevron-left" size={38} color="white" /></TouchableOpacity>
           <TouchableOpacity onPress={onNextWeek}><MaterialCommunityIcons name="chevron-right" size={38} color="white" /></TouchableOpacity>
         </View>
