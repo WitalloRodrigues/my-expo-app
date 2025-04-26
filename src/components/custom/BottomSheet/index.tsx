@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Animated,
   Easing,
   Dimensions,
+  Keyboard,
 } from "react-native";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -23,23 +24,24 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
 }) => {
   const animation = useRef(new Animated.Value(0)).current;
 
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.timing(animation, {
-      toValue: isOpen ? 1 : 0,
+      toValue: isOpen ? 0 : SCREEN_HEIGHT,
       duration: 300,
       easing: Easing.out(Easing.ease),
       useNativeDriver: false,
     }).start();
   }, [isOpen]);
 
-  const sheetTranslateY = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [SCREEN_HEIGHT, 0],
-  });
+  // vamos animar o `top` em vez de height
+  const animatedStyle = {
+    top: animation,
+    bottom: 0,
+  };
 
   return (
     <>
-      {/* Backdrop */}
+      {/* backdrop */}
       {isOpen && (
         <Pressable
           className="absolute inset-0 bg-black/40 z-40"
@@ -47,27 +49,23 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
         />
       )}
 
-      {/* Sheet */}
+      {/* sheet animado */}
       <Animated.View
-        className="absolute left-0 right-0 bg-white z-[999] rounded-t-3xl overflow-hidden"
-        style={{
-          height: SCREEN_HEIGHT,
-          bottom: 0,
-          transform: [{ translateY: sheetTranslateY }],
-        }}
+        className="absolute left-0 right-0 bg-red-300 mt-11 z-[999] rounded-t-3xl overflow-hidden"
+        style={animatedStyle}
       >
-        {/* Botão de fechar */}
-        <View className=" p-4">
+        {/* botão fechar */}
+        <View className="p-4 ">
           <Pressable
             onPress={() => setIsOpen(false)}
             className="w-10 h-10 rounded-full bg-gray-300 items-center justify-center"
           >
-            <Text className="text-xl">x</Text>
+            <Text className="text-xl">×</Text>
           </Pressable>
         </View>
 
-        {/* Conteúdo */}
-        <View className="flex-1 px-4">{children}</View>
+        {/* conteúdo (deixa flex:1 para ocupar o resto) */}
+        <View className="flex-1 ">{children}</View>
       </Animated.View>
     </>
   );
