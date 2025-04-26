@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { BackHandler } from "react-native";
 import AppMenu from '../menu';
 import { useNavigation, ParamListBase, NavigationProp } from '@react-navigation/native';
+import { ScheduleFormContent } from './components/ScheduleFormContent';
 
 export default function AgendaScreen() {
   // Especificando o tipo genérico para o hook useNavigation
@@ -98,7 +99,7 @@ export default function AgendaScreen() {
       <ScrollToTop showScrollTop={showScrollTop} scrollToTop={scrollToTop}/>
 
       <BottomSheet isOpen={isOpen} setIsOpen={setIsOpen}>
-        <Text className="text-x">Conteúdo aqui</Text>
+        <ScheduleFormContent onClose={() => setIsOpen(false)} />
       </BottomSheet>
 
       <RightSheet>

@@ -1,74 +1,51 @@
-import React, { useRef } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  Animated,
-  Easing,
-  Dimensions,
-} from "react-native";
+// src/components/custom/BottomSheet.tsx
+import React, { useRef, useEffect } from "react";
+import { Animated, Easing, Dimensions, Pressable, Text, View } from "react-native";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SHEET_HEIGHT = SCREEN_HEIGHT ;
 
 interface BottomSheetProps {
   isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+  setIsOpen(open: boolean): void;
   children: React.ReactNode;
 }
 
-export const BottomSheet: React.FC<BottomSheetProps> = ({
-  isOpen,
-  setIsOpen,
-  children,
-}) => {
-  const animation = useRef(new Animated.Value(0)).current;
+export function BottomSheet({ isOpen, setIsOpen, children }: BottomSheetProps) {
+  const translateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
 
-  React.useEffect(() => {
-    Animated.timing(animation, {
-      toValue: isOpen ? 1 : 0,
+  useEffect(() => {
+    Animated.timing(translateY, {
+      toValue: isOpen ? 0 : SHEET_HEIGHT,
       duration: 300,
       easing: Easing.out(Easing.ease),
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start();
   }, [isOpen]);
 
-  const sheetTranslateY = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [SCREEN_HEIGHT, 0],
+  const overlayOpacity = translateY.interpolate({
+    inputRange: [0, SHEET_HEIGHT],
+    outputRange: [0.4, 0],
   });
 
   return (
     <>
-      {/* Backdrop */}
-      {isOpen && (
-        <Pressable
-          className="absolute inset-0 bg-black/40 z-40"
-          onPress={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* Sheet */}
+      {/* overlay */}
       <Animated.View
-        className="absolute left-0 right-0 bg-white z-[999] rounded-t-3xl overflow-hidden"
+      />
+
+      {/* sheet */}
+      <Animated.View
+        className="absolute left-0 right-0 bottom-0 top-0 mt-10 bg-red-200 z-[99] rounded-t-3xl"
         style={{
-          height: SCREEN_HEIGHT,
-          bottom: 0,
-          transform: [{ translateY: sheetTranslateY }],
+          height: SHEET_HEIGHT,
+          transform: [{ translateY }],
         }}
       >
-        {/* Botão de fechar */}
-        <View className=" p-4">
-          <Pressable
-            onPress={() => setIsOpen(false)}
-            className="w-10 h-10 rounded-full bg-gray-300 items-center justify-center"
-          >
-            <Text className="text-xl">x</Text>
-          </Pressable>
-        </View>
 
-        {/* Conteúdo */}
-        <View className="flex-1 px-4">{children}</View>
+        {/* conteúdo */}
+        <View className="flex-1 ">{children}</View>
       </Animated.View>
     </>
   );
-};
+}
